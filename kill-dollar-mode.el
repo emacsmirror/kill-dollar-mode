@@ -53,8 +53,7 @@
   (run-hooks 'kill-dollar-after-kill-new-hook))
 
 (define-minor-mode kill-dollar-mode
-  "A minor mode to remove leading $ from lines when killing text
- in org or markdown code blocks."
+  "Remove leading $ from lines when killing text in Org or Markdown code blocks."
   :lighter " Kill-$"
   :global nil
 
@@ -67,8 +66,8 @@
 (declare-function org-element-context "org-element" (&optional element))
 
 (defun kill-dollar-remove-dollar-on-kill ()
-  "Remove leading $ from each line of killed text when inside org
- or markdown code blocks."
+  "Remove leading $ from each line of killed text.
+Works inside org or markdown code blocks."
   (when (and (or (derived-mode-p 'org-mode) (derived-mode-p 'markdown-mode))
              (save-excursion
                (or
