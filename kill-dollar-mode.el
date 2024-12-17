@@ -62,6 +62,10 @@
       (add-hook 'kill-dollar-after-kill-new-hook #'kill-dollar-remove-dollar-on-kill nil t)
     (remove-hook 'kill-dollar-after-kill-new-hook #'kill-dollar-remove-dollar-on-kill t)))
 
+(declare-function markdown-code-block-at-point-p "markdown-mode" (&optional pos))
+(declare-function org-element-type "org-element" (element))
+(declare-function org-element-context "org-element" (&optional element))
+
 (defun kill-dollar-remove-dollar-on-kill ()
   "Remove leading $ from each line of killed text when inside org
  or markdown code blocks."
@@ -71,7 +75,7 @@
                 (and (derived-mode-p 'org-mode)
                      (eq (org-element-type (org-element-context)) 'src-block))
                 (and (derived-mode-p 'markdown-mode)
-                     (markdown-code-block-at-point)))))
+                     (markdown-code-block-at-point-p)))))
       (let ((processed-text
              (with-temp-buffer
                (insert (current-kill 0))
