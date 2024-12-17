@@ -57,6 +57,9 @@
   :lighter " Kill-$"
   :global nil
 
+  (unless (or (derived-mode-p 'org-mode) (derived-mode-p 'markdown-mode))
+    (user-error "Kill-Dollar mode works only in Org-mode and Markdown-mode."))
+
   (if kill-dollar-mode
       (add-hook 'kill-dollar-after-kill-new-hook #'kill-dollar-remove-dollar-on-kill nil t)
     (remove-hook 'kill-dollar-after-kill-new-hook #'kill-dollar-remove-dollar-on-kill t)))
@@ -68,13 +71,12 @@
 (defun kill-dollar-remove-dollar-on-kill ()
   "Remove leading $ from each line of killed text.
 Works inside org or markdown code blocks."
-  (when (and (or (derived-mode-p 'org-mode) (derived-mode-p 'markdown-mode))
-             (save-excursion
-               (or
-                (and (derived-mode-p 'org-mode)
-                     (eq (org-element-type (org-element-context)) 'src-block))
-                (and (derived-mode-p 'markdown-mode)
-                     (markdown-code-block-at-point-p)))))
+  (when (save-excursion
+          (or
+           (and (derived-mode-p 'org-mode)
+                (eq (org-element-type (org-element-context)) 'src-block))
+           (and (derived-mode-p 'markdown-mode)
+                (markdown-code-block-at-point-p))))
       (let ((processed-text
              (with-temp-buffer
                (insert (current-kill 0))
